@@ -81,7 +81,13 @@
     "rules": {
       "unicorn/prefer-module": "off",
       "import-x/extensions": "off",
-      "n/prefer-global/process": "off"
+      "n/prefer-global/process": "off",
+      "camelcase": [
+        "error",
+        {
+          "properties": "never"
+        }
+      ]
     }
   }
 }
