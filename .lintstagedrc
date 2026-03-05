@@ -1,8 +1,11 @@
 {
-  "*.{js,json,md,yml,yaml}": [
+  "*.{js,json,yml,yaml}": [
     "prettier --write"
   ],
   "*.js": [
     "xo --fix"
+  ],
+  "*.md": [
+    "remark -qfo"
   ]
 }

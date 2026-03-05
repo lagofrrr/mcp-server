@@ -76,119 +76,119 @@ This server exposes the complete [Forward Email API](https://forwardemail.net/em
 
 ### Account
 
-- `getAccount` - Get your account details
-- `updateAccount` - Update your account
+* `getAccount` - Get your account details
+* `updateAccount` - Update your account
 
 ### Logs
 
-- `downloadLogs` - Download email delivery logs
+* `downloadLogs` - Download email delivery logs
 
 ### Contacts (CardDAV)
 
-- `listContacts` - List all contacts
-- `createContact` - Create a contact
-- `getContact` - Get a contact by ID
-- `updateContact` - Update a contact
-- `deleteContact` - Delete a contact
+* `listContacts` - List all contacts
+* `createContact` - Create a contact
+* `getContact` - Get a contact by ID
+* `updateContact` - Update a contact
+* `deleteContact` - Delete a contact
 
 ### Calendars (CalDAV)
 
-- `listCalendars` - List all calendars
-- `createCalendar` - Create a calendar
-- `getCalendar` - Get a calendar by ID
-- `updateCalendar` - Update a calendar
-- `deleteCalendar` - Delete a calendar
+* `listCalendars` - List all calendars
+* `createCalendar` - Create a calendar
+* `getCalendar` - Get a calendar by ID
+* `updateCalendar` - Update a calendar
+* `deleteCalendar` - Delete a calendar
 
 ### Calendar Events (CalDAV)
 
-- `listCalendarEvents` - List all calendar events
-- `createCalendarEvent` - Create a calendar event
-- `getCalendarEvent` - Get a calendar event by ID
-- `updateCalendarEvent` - Update a calendar event
-- `deleteCalendarEvent` - Delete a calendar event
+* `listCalendarEvents` - List all calendar events
+* `createCalendarEvent` - Create a calendar event
+* `getCalendarEvent` - Get a calendar event by ID
+* `updateCalendarEvent` - Update a calendar event
+* `deleteCalendarEvent` - Delete a calendar event
 
 ### Domains
 
-- `listDomains` - List all domains
-- `createDomain` - Create a new domain
-- `getDomain` - Get a domain by ID or name
-- `updateDomain` - Update a domain
-- `deleteDomain` - Delete a domain
-- `verifyDomainRecords` - Verify domain DNS records
-- `verifySmtpRecords` - Verify domain SMTP records
-- `testS3Connection` - Test custom S3 connection for a domain
+* `listDomains` - List all domains
+* `createDomain` - Create a new domain
+* `getDomain` - Get a domain by ID or name
+* `updateDomain` - Update a domain
+* `deleteDomain` - Delete a domain
+* `verifyDomainRecords` - Verify domain DNS records
+* `verifySmtpRecords` - Verify domain SMTP records
+* `testS3Connection` - Test custom S3 connection for a domain
 
 ### Domain Catch-All Passwords
 
-- `listCatchAllPasswords` - List domain-wide catch-all passwords
-- `createCatchAllPassword` - Create a domain-wide catch-all password
-- `deleteCatchAllPassword` - Remove a domain-wide catch-all password
+* `listCatchAllPasswords` - List domain-wide catch-all passwords
+* `createCatchAllPassword` - Create a domain-wide catch-all password
+* `deleteCatchAllPassword` - Remove a domain-wide catch-all password
 
 ### Domain Invites
 
-- `acceptDomainInvite` - Accept a domain invite
-- `createDomainInvite` - Invite a user to a domain
-- `removeDomainInvite` - Remove a domain invite
+* `acceptDomainInvite` - Accept a domain invite
+* `createDomainInvite` - Invite a user to a domain
+* `removeDomainInvite` - Remove a domain invite
 
 ### Domain Members
 
-- `updateDomainMember` - Update a domain member role
-- `removeDomainMember` - Remove a member from a domain
+* `updateDomainMember` - Update a domain member role
+* `removeDomainMember` - Remove a member from a domain
 
 ### Aliases
 
-- `listAliases` - List aliases for a domain
-- `createAlias` - Create a new alias
-- `getAlias` - Get an alias by ID
-- `updateAlias` - Update an alias
-- `deleteAlias` - Delete an alias
-- `generateAliasPassword` - Generate or set a password for an alias
+* `listAliases` - List aliases for a domain
+* `createAlias` - Create a new alias
+* `getAlias` - Get an alias by ID
+* `updateAlias` - Update an alias
+* `deleteAlias` - Delete an alias
+* `generateAliasPassword` - Generate or set a password for an alias
 
 ### Sieve Scripts
 
-- `listSieveScripts` - List Sieve scripts for an alias
-- `createSieveScript` - Create a Sieve script for an alias
-- `getSieveScript` - Get a Sieve script by ID
-- `updateSieveScript` - Update a Sieve script
-- `deleteSieveScript` - Delete a Sieve script
-- `activateSieveScript` - Activate a Sieve script
+* `listSieveScripts` - List Sieve scripts for an alias
+* `createSieveScript` - Create a Sieve script for an alias
+* `getSieveScript` - Get a Sieve script by ID
+* `updateSieveScript` - Update a Sieve script
+* `deleteSieveScript` - Delete a Sieve script
+* `activateSieveScript` - Activate a Sieve script
 
 ### Sieve Scripts (Alias Auth)
 
-- `listSieveScriptsAliasAuth` - List Sieve scripts (alias auth)
-- `createSieveScriptAliasAuth` - Create a Sieve script (alias auth)
-- `getSieveScriptAliasAuth` - Get a Sieve script (alias auth)
-- `updateSieveScriptAliasAuth` - Update a Sieve script (alias auth)
-- `deleteSieveScriptAliasAuth` - Delete a Sieve script (alias auth)
-- `activateSieveScriptAliasAuth` - Activate a Sieve script (alias auth)
+* `listSieveScriptsAliasAuth` - List Sieve scripts (alias auth)
+* `createSieveScriptAliasAuth` - Create a Sieve script (alias auth)
+* `getSieveScriptAliasAuth` - Get a Sieve script (alias auth)
+* `updateSieveScriptAliasAuth` - Update a Sieve script (alias auth)
+* `deleteSieveScriptAliasAuth` - Delete a Sieve script (alias auth)
+* `activateSieveScriptAliasAuth` - Activate a Sieve script (alias auth)
 
 ### Emails (Outbound SMTP)
 
-- `listEmails` - List outbound SMTP emails
-- `sendEmail` - Send an email via outbound SMTP
-- `getEmailLimit` - Get outbound SMTP email sending limit
-- `getEmail` - Get an outbound SMTP email by ID
-- `deleteEmail` - Delete an outbound SMTP email
+* `listEmails` - List outbound SMTP emails
+* `sendEmail` - Send an email via outbound SMTP
+* `getEmailLimit` - Get outbound SMTP email sending limit
+* `getEmail` - Get an outbound SMTP email by ID
+* `deleteEmail` - Delete an outbound SMTP email
 
 ### Messages (IMAP)
 
-- `listMessages` - List and search messages in a folder
-- `createMessage` - Create a new message (draft)
-- `getMessage` - Get a message by ID
-- `updateMessage` - Update a message
-- `deleteMessage` - Delete a message
+* `listMessages` - List and search messages in a folder
+* `createMessage` - Create a new message (draft)
+* `getMessage` - Get a message by ID
+* `updateMessage` - Update a message
+* `deleteMessage` - Delete a message
 
 ### Folders (IMAP)
 
-- `listFolders` - List all folders
-- `createFolder` - Create a new folder
-- `getFolder` - Get a folder by ID
-- `updateFolder` - Update a folder
-- `deleteFolder` - Delete a folder
+* `listFolders` - List all folders
+* `createFolder` - Create a new folder
+* `getFolder` - Get a folder by ID
+* `updateFolder` - Update a folder
+* `deleteFolder` - Delete a folder
 
 ### Encrypt
 
-- `encryptRecord` - Encrypt a plaintext Forward Email TXT record
+* `encryptRecord` - Encrypt a plaintext Forward Email TXT record
 
 ## Development
 
@@ -205,7 +205,7 @@ pnpm test
 
 ## Links
 
-- [Forward Email](https://forwardemail.net)
-- [Forward Email API Docs](https://forwardemail.net/email-api)
-- [MCP Specification](https://github.com/modelcontextprotocol/specification)
-- [MCP Landing Page](https://forwardemail.net/mcp)
+* [Forward Email](https://forwardemail.net)
+* [Forward Email API Docs](https://forwardemail.net/email-api)
+* [MCP Specification](https://github.com/modelcontextprotocol/specification)
+* [MCP Landing Page](https://forwardemail.net/mcp)
