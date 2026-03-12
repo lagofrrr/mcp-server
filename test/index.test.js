@@ -50,33 +50,74 @@ const sendRequest = (child, request) => {
     };
 
     child.stdout.on('data', onData);
-
-    child.stderr.once('data', (data) => {
-      clearTimeout(timer);
-      reject(new Error(`CLI Error: ${data.toString()}`));
-    });
   });
 
   child.stdin.write(JSON.stringify(request) + '\n');
   return responsePromise;
 };
 
+// Initialize the MCP server with the standard handshake.
+// Returns the initialize response for verification if needed.
+const initializeServer = async (child) => {
+  const response = await sendRequest(child, {
+    jsonrpc: '2.0',
+    id: 0,
+    method: 'initialize',
+    params: {
+      protocolVersion: '2024-11-05',
+      capabilities: {},
+      clientInfo: {name: 'test', version: '1.0.0'},
+    },
+  });
+
+  // Send initialized notification (no response expected)
+  child.stdin.write(
+    JSON.stringify({jsonrpc: '2.0', method: 'notifications/initialized'}) +
+      '\n',
+  );
+
+  return response;
+};
+
+// Send a tools/list request
+const listTools = async (child) => {
+  const response = await sendRequest(child, {
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'tools/list',
+    params: {},
+  });
+
+  return response.result;
+};
+
+// Send a tools/call request
+const callTool = async (child, name, arguments_ = {}) => {
+  const response = await sendRequest(child, {
+    jsonrpc: '2.0',
+    id: 2,
+    method: 'tools/call',
+    params: {name, arguments: arguments_},
+  });
+
+  return response.result;
+};
+
 test('MCP Server', async (t) => {
   await t.test('listTools returns all tools', async () => {
     const child = runCli();
     try {
-      const response = await sendRequest(child, {id: '1', type: 'listTools'});
+      await initializeServer(child);
+      const result = await listTools(child);
 
-      assert.strictEqual(response.type, 'toolResponse');
-      assert.strictEqual(response.id, '1');
-      assert(Array.isArray(response.tools));
+      assert(Array.isArray(result.tools));
 
-      const names = new Set(response.tools.map((tool) => tool.name));
+      const names = new Set(result.tools.map((tool) => tool.name));
 
       // Should have 68 tools (all API endpoints except WebSocket)
       assert(
-        response.tools.length >= 60,
-        `Expected >= 60 tools, got ${response.tools.length}`,
+        result.tools.length >= 60,
+        `Expected >= 60 tools, got ${result.tools.length}`,
       );
 
       // Spot-check key tools from each resource
@@ -150,32 +191,29 @@ test('MCP Server', async (t) => {
   await t.test('unknown tool returns error', async () => {
     const child = runCli();
     try {
-      const response = await sendRequest(child, {
-        id: '2',
-        type: 'invokeTool',
-        name: 'unknownTool',
-        arguments: {},
-      });
+      await initializeServer(child);
+      const result = await callTool(child, 'unknownTool', {});
 
-      assert.strictEqual(response.type, 'error');
-      assert.strictEqual(response.id, '2');
-      assert.strictEqual(response.message, 'Tool not found: unknownTool');
+      assert.strictEqual(result.isError, true);
+      assert.strictEqual(result.content[0].text, 'Tool not found: unknownTool');
     } finally {
       killChild(child);
     }
   });
 
-  await t.test('unknown request type returns error', async () => {
+  await t.test('unknown method returns JSON-RPC error', async () => {
     const child = runCli();
     try {
+      await initializeServer(child);
       const response = await sendRequest(child, {
-        id: '3',
-        type: 'unknownType',
+        jsonrpc: '2.0',
+        id: 3,
+        method: 'unknownMethod',
+        params: {},
       });
 
-      assert.strictEqual(response.type, 'error');
-      assert.strictEqual(response.id, '3');
-      assert(response.message.includes('Unknown request type'));
+      assert(response.error, 'Expected JSON-RPC error response');
+      assert(typeof response.error.message === 'string');
     } finally {
       killChild(child);
     }
@@ -189,10 +227,8 @@ test('MCP Server', async (t) => {
     async () => {
       const child = runCli();
       try {
-        const response = await sendRequest(child, {
-          id: 'alias-inputs',
-          type: 'listTools',
-        });
+        await initializeServer(child);
+        const result = await listTools(child);
 
         const aliasAuthTools = [
           'listContacts',
@@ -229,14 +265,14 @@ test('MCP Server', async (t) => {
         ];
 
         for (const toolName of aliasAuthTools) {
-          const tool = response.tools.find((t) => t.name === toolName);
+          const tool = result.tools.find((t) => t.name === toolName);
           assert(tool, `Tool ${toolName} not found`);
           assert(
-            tool.input.properties.alias_username,
+            tool.inputSchema.properties.alias_username,
             `${toolName} missing alias_username input`,
           );
           assert(
-            tool.input.properties.alias_password,
+            tool.inputSchema.properties.alias_password,
             `${toolName} missing alias_password input`,
           );
         }
@@ -251,22 +287,20 @@ test('MCP Server', async (t) => {
     async () => {
       const child = runCli();
       try {
-        const response = await sendRequest(child, {
-          id: 'both-inputs',
-          type: 'listTools',
-        });
+        await initializeServer(child);
+        const result = await listTools(child);
 
         const bothAuthTools = ['getAccount', 'updateAccount', 'sendEmail'];
 
         for (const toolName of bothAuthTools) {
-          const tool = response.tools.find((t) => t.name === toolName);
+          const tool = result.tools.find((t) => t.name === toolName);
           assert(tool, `Tool ${toolName} not found`);
           assert(
-            tool.input.properties.alias_username,
+            tool.inputSchema.properties.alias_username,
             `${toolName} missing alias_username input`,
           );
           assert(
-            tool.input.properties.alias_password,
+            tool.inputSchema.properties.alias_password,
             `${toolName} missing alias_password input`,
           );
         }
@@ -281,10 +315,8 @@ test('MCP Server', async (t) => {
     async () => {
       const child = runCli();
       try {
-        const response = await sendRequest(child, {
-          id: 'apikey-inputs',
-          type: 'listTools',
-        });
+        await initializeServer(child);
+        const result = await listTools(child);
 
         const apiKeyOnlyTools = [
           'downloadLogs',
@@ -302,14 +334,14 @@ test('MCP Server', async (t) => {
         ];
 
         for (const toolName of apiKeyOnlyTools) {
-          const tool = response.tools.find((t) => t.name === toolName);
+          const tool = result.tools.find((t) => t.name === toolName);
           assert(tool, `Tool ${toolName} not found`);
           assert(
-            !tool.input.properties.alias_username,
+            !tool.inputSchema.properties.alias_username,
             `${toolName} should NOT have alias_username input`,
           );
           assert(
-            !tool.input.properties.alias_password,
+            !tool.inputSchema.properties.alias_password,
             `${toolName} should NOT have alias_password input`,
           );
         }
@@ -324,17 +356,12 @@ test('MCP Server', async (t) => {
     await t.test(`${name} returns API error with invalid key`, async () => {
       const child = runCli({FORWARD_EMAIL_API_KEY: 'test-key'});
       try {
-        const response = await sendRequest(child, {
-          id: name,
-          type: 'invokeTool',
-          name: toolName,
-          arguments: arguments_,
-        });
+        await initializeServer(child);
+        const result = await callTool(child, toolName, arguments_);
 
-        assert.strictEqual(response.type, 'error');
-        assert.strictEqual(response.id, name);
-        assert(typeof response.message === 'string');
-        assert(response.message.length > 0);
+        assert.strictEqual(result.isError, true);
+        assert(typeof result.content[0].text === 'string');
+        assert(result.content[0].text.length > 0);
       } finally {
         killChild(child);
       }
@@ -381,21 +408,18 @@ test('MCP Server', async (t) => {
         FORWARD_EMAIL_ALIAS_PASSWORD: 'env-fake-password',
       });
       try {
-        const response = await sendRequest(child, {
-          id: 'alias-env',
-          type: 'invokeTool',
-          name: 'listMessages',
-          arguments: {folder: 'INBOX'},
+        await initializeServer(child);
+        const result = await callTool(child, 'listMessages', {
+          folder: 'INBOX',
         });
 
         // Should get an auth error (not a "Basic authentication required" error)
-        assert.strictEqual(response.type, 'error');
-        assert.strictEqual(response.id, 'alias-env');
-        assert(typeof response.message === 'string');
-        assert(response.message.length > 0);
+        assert.strictEqual(result.isError, true);
+        assert(typeof result.content[0].text === 'string');
+        assert(result.content[0].text.length > 0);
         // The error should NOT be "Basic authentication required" since we sent Basic auth
         assert(
-          !response.message.includes('Basic authentication required'),
+          !result.content[0].text.includes('Basic authentication required'),
           'Should use Basic auth from env vars, not Bearer',
         );
       } finally {
@@ -408,17 +432,13 @@ test('MCP Server', async (t) => {
   await t.test('encryptRecord returns a result', async () => {
     const child = runCli({FORWARD_EMAIL_API_KEY: 'test-key'});
     try {
-      const response = await sendRequest(child, {
-        id: 'encrypt',
-        type: 'invokeTool',
-        name: 'encryptRecord',
-        arguments: {input: 'test'},
-      });
+      await initializeServer(child);
+      const result = await callTool(child, 'encryptRecord', {input: 'test'});
 
-      assert.strictEqual(response.type, 'toolResponse');
-      assert.strictEqual(response.id, 'encrypt');
-      assert(typeof response.result === 'string');
-      assert(response.result.startsWith('forward-email='));
+      assert.strictEqual(result.isError, undefined);
+      const {text} = result.content[0];
+      assert(typeof text === 'string');
+      assert(text.startsWith('forward-email='));
     } finally {
       killChild(child);
     }
@@ -430,19 +450,15 @@ test('MCP Server', async (t) => {
     async () => {
       const child = runCli({FORWARD_EMAIL_API_KEY: 'test-basic-key'});
       try {
-        const response = await sendRequest(child, {
-          id: 'basic-auth-test',
-          type: 'invokeTool',
-          name: 'getAccount',
-          arguments: {},
-        });
+        await initializeServer(child);
+        const result = await callTool(child, 'getAccount', {});
 
         // Should get "Invalid API token" (meaning Basic auth was accepted)
         // NOT "Authentication is required" (which means Bearer was sent)
-        assert.strictEqual(response.type, 'error');
+        assert.strictEqual(result.isError, true);
         assert(
-          response.message.includes('Invalid API token'),
-          `Expected "Invalid API token" error from Basic auth, got: "${response.message}"`,
+          result.content[0].text.includes('Invalid API token'),
+          `Expected "Invalid API token" error from Basic auth, got: "${result.content[0].text}"`,
         );
       } finally {
         killChild(child);
